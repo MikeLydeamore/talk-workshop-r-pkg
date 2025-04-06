@@ -1,0 +1,356 @@
+---
+title: "Intro to R Packages with {usethis}"
+format: revealjs
+execute:
+  echo: true
+  warning: false
+  message: false
+---
+
+## Why Write an R Package?
+
+> If you copy-paste the same function twice, it belongs in a package.
+
+---
+
+### What is an R package?
+
+- A portable, documented bundle of code and data
+- Standard structure lets R understand how to load your work
+- Useful for:
+  - Sharing functions with colleagues
+  - Avoiding repetition across scripts
+  - Publishing open-source tools
+
+---
+
+## Getting Started
+
+### Create a new package
+
+```r
+usethis::create_package("path/to/mypackage")
+```
+
+This creates the scaffolding for your package:
+
+- `DESCRIPTION`
+- `NAMESPACE`
+- `R/` directory for code
+
+---
+
+### Add Git support
+
+```r
+usethis::use_git()
+```
+
+> 💡 **Pro tip:** Version control makes collaboration and rollback easier.
+
+---
+
+## Key Package Files
+
+:::: {.columns}
+::: {.column width="50%"}
+
+**📁 DESCRIPTION**
+- Metadata about your package
+
+**📁 NAMESPACE**
+- Controls what functions are visible
+
+:::
+
+::: {.column width="50%"}
+
+**📁 R/**
+- All your function files live here
+
+**📁 man/**
+- Auto-generated documentation
+
+:::
+::::
+
+---
+
+## The DESCRIPTION File
+
+Every R package has a `DESCRIPTION` file — it’s the package’s **metadata**.
+
+```text
+Package: mypackage
+Title: What the Package Does (One Line, Title Case)
+Version: 0.0.0.9000
+Authors@R: person("Your", "Name", email = "you@example.com", role = c("aut", "cre"))
+Description: A longer description of what your package does.
+License: MIT + file LICENSE
+Encoding: UTF-8
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.2.3
+```
+
+---
+
+### Key Fields in DESCRIPTION
+
+| Field       | What it does |
+|-------------|--------------|
+| `Package`   | The name of your package (must match folder name) |
+| `Title`     | One-sentence title (no period) |
+| `Version`   | Start with `0.0.0.9000` for dev |
+| `Authors@R` | Who wrote the package |
+| `Description` | Paragraph describing functionality |
+| `License`   | Licensing info (e.g., MIT, GPL-3) |
+| `Imports`   | Other packages your code uses |
+
+> 🛠️ You can add dependencies with:  
+> `usethis::use_package("dplyr")`
+
+---
+
+## The NAMESPACE File
+
+The `NAMESPACE` tells R what to export to users and what to import from other packages.
+
+Example (auto-generated):
+
+```text
+export(add_numbers)
+importFrom(stats, lm)
+```
+
+> 🧠 If it's not in NAMESPACE, users can't use it — even if the function exists.
+
+---
+
+### Managing NAMESPACE
+
+You **rarely edit this file directly**. Instead, let roxygen handle it.
+
+Use:
+- `@export` to add a function
+- `@importFrom dplyr select` to import selectively
+
+Then run:
+
+```r
+devtools::document()
+```
+
+This updates `NAMESPACE` for you.
+
+::: {.callout-tip}
+Internal helpers? Leave out `@export` — they’ll stay private.
+:::
+
+## Your First Function
+
+Create a new R script:
+
+```r
+usethis::use_r("add_numbers")
+```
+
+---
+
+### A function without documentation
+
+
+```r
+# File: R/add_numbers.R
+
+add_numbers <- function(x, y) {
+  x + y
+}
+```
+
+Then load your package into your session:
+
+```r
+devtools::load_all()
+```
+
+::: {.fragment}
+> This mimics "installing" your package without needing to reinstall each time.
+:::
+
+::: {.callout-tip}
+You’ll see `add_numbers()` autocomplete in your session now!
+:::
+
+---
+
+### Try using the function
+
+```r
+add_numbers(2, 3)
+```
+
+✅ Works!
+
+```r
+?add_numbers
+```
+
+❌ No documentation yet!
+
+---
+
+## Add Documentation with Roxygen2
+
+```r
+#' Add two numbers
+#'
+#' @param x A number
+#' @param y Another number
+#' @return The sum of x and y
+#' @export
+add_numbers <- function(x, y) {
+  x + y
+}
+```
+
+> 💡 Each line starts with `#'` and sits directly above the function.
+
+---
+
+### Generate documentation
+
+```r
+devtools::document()
+```
+
+- Updates `NAMESPACE`
+- Creates a `.Rd` file in `man/`
+- Links your function to `?help` lookup
+
+---
+
+### Try again
+
+```r
+?add_numbers
+```
+
+✅ Now you’ll see formatted documentation!
+
+```r
+add_numbers(10, 5)
+```
+
+✅ Still works!
+
+## Including Data
+
+### Setup for raw data
+
+```r
+usethis::use_data_raw("my_dataset")
+```
+
+This creates a `data-raw/` folder and a script you can use to clean/load data.
+
+---
+
+### Save it into the package
+
+```r
+# In data-raw/my_dataset.R
+
+# Replace with your actual import code
+my_dataset <- read.csv("path/to/your.csv")
+
+usethis::use_data(my_dataset)
+```
+
+> 📦 Your data is now accessible via `my_dataset` when the package is loaded!
+
+---
+
+## Documenting Data
+
+Like functions, you can document datasets using **roxygen**.
+
+Create a new `.R` file (e.g., `R/data-documentation.R`) and add:
+
+```r
+#' Example dataset: my_dataset
+#'
+#' This dataset contains example data imported from a CSV.
+#'
+#' @format A data frame with 100 rows and 5 variables:
+#' \describe{
+#'   \item{col1}{Description of column 1}
+#'   \item{col2}{Description of column 2}
+#'   \item{col3}{Description of column 3}
+#' }
+#' @source Imported from a CSV file.
+"my_dataset"
+```
+
+> 💡 The name in quotes at the end (`"my_dataset"`) must match the object name.
+
+---
+
+### Re-document
+
+```r
+devtools::document()
+```
+
+This will create a help file just like for functions.
+
+```r
+?my_dataset
+```
+
+You now get documentation in the help panel.
+
+---
+
+
+## Building Your Package
+
+```r
+devtools::document()  # Ensure docs are updated
+devtools::check()     # Run package checks
+devtools::install()   # Install locally
+```
+
+> `check()` will catch most common problems before they become bugs.
+
+---
+
+## Wrap-up
+
+- Your first package: ✅
+- Functions with documentation: ✅
+- Embedded data: ✅
+- Ready to grow your code into a real tool!
+
+---
+
+## Next Steps
+
+- Build more functions
+- Explore `usethis::use_testthat()` for testing
+- Share it via GitHub: `usethis::use_github()`
+
+---
+
+## Resources
+
+- 📘 <https://r-pkgs.org>
+- 🔧 `usethis` cheatsheet: <https://usethis.r-lib.org>
+- 🧰 `devtools` docs: <https://devtools.r-lib.org>
+
+---
+
+## Link to Extended Guide
+
+👉 [View full examples, exercises, and practice materials](#)  
+*(book version to be linked here)*
+
