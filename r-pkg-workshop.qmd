@@ -5,6 +5,7 @@ execute:
   echo: true
   warning: false
   message: false
+output-file: index.html
 ---
 
 ## Why Write an R Package?
