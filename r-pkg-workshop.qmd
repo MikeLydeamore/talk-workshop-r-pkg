@@ -1,6 +1,6 @@
 ---
 title: "Intro to R Packages with {usethis}"
-format: revealjs
+format: presentation-revealjs+letterbox
 execute:
   echo: true
   warning: false
@@ -51,7 +51,7 @@ usethis::use_git()
 
 ---
 
-## ⚠️ Before You Commit: Check Your Data
+## ⚠️ Before You Commit: Check Your Data {.smaller}
 
 Using Git is great — but before you commit anything:
 
@@ -129,7 +129,7 @@ RoxygenNote: 7.2.3
 
 ---
 
-### Key Fields in DESCRIPTION
+### Key Fields in DESCRIPTION {.smaller}
 
 | Field       | What it does |
 |-------------|--------------|
@@ -141,8 +141,25 @@ RoxygenNote: 7.2.3
 | `License`   | Licensing info (e.g., MIT, GPL-3) |
 | `Imports`   | Other packages your code uses |
 
-> 🛠️ You can add dependencies with:  
-> `usethis::use_package("dplyr")`
+---
+
+### Adding Dependencies
+
+Use `Imports:` in `DESCRIPTION` to declare which packages your functions rely on.
+
+Don't edit it by hand — use `usethis::use_package()`:
+
+```r
+usethis::use_package("dplyr")
+usethis::use_package("ggplot2")
+```
+
+This automatically adds to `Imports:` and avoids typos.
+
+::: {.callout-tip}
+Only list packages your code depends on directly.  
+Use `Suggests:` for things like testing, vignettes, or optional features.
+:::
 
 ---
 
@@ -212,8 +229,10 @@ devtools::load_all()
 > This mimics "installing" your package without needing to reinstall each time.
 :::
 
+::: {.fragment}
 ::: {.callout-tip}
 You’ll see `add_numbers()` autocomplete in your session now!
+:::
 :::
 
 ---
@@ -386,6 +405,5 @@ devtools::install()   # Install locally
 
 ## Link to Extended Guide
 
-👉 [View full examples, exercises, and practice materials](#)  
-*(book version to be linked here)*
+👉 [View full examples, exercises, and practice materials](https://www.michaellydeamore.com/guides/r-pkg/)  
 
