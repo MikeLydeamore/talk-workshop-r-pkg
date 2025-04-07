@@ -50,6 +50,40 @@ usethis::use_git()
 
 ---
 
+## ⚠️ Before You Commit: Check Your Data
+
+Using Git is great — but before you commit anything:
+
+- 🔍 **Review your data files**
+- 📜 **Check any license or data-sharing agreement**
+- ❌ Avoid committing raw data unless you’re sure it’s okay
+
+> Even private Git repos are **not fully secure**.
+
+::: {.callout-warning}
+Never commit:
+
+- Personally identifiable information (PII)
+- Internal business data
+- Anything you wouldn't email to a stranger
+:::
+
+---
+
+### Pro tip
+
+Use `.gitignore` to avoid tracking sensitive files:
+
+```text
+# In .gitignore
+data-raw/
+private-data.csv
+```
+
+You can also add `.gitattributes` or `.Rbuildignore` to prevent including files in your built package.
+
+---
+
 ## Key Package Files
 
 :::: {.columns}
